@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String DRIVER_DOOR_CLOSE = "closeDriverDoors";
 
+    private static final String OPEN_ALL_WINDOWS = "openAllWindows";
+
+    private static final String CLOSE_ALL_WINDOWS = "closeAllWindows";
+
     private static final String URL = "http://hackathon.intrepidcs.com/api/data";
 
     private static final String PRIVATE_KEY = "785a2fc6f53cc57c3898c77efe4f9000f78ddae1d3209acf65d617c864673d6f";
@@ -72,6 +76,40 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+    public void openAllWindows(final View view) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                final String resp = post(OPEN_ALL_WINDOWS);
+                    view.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            }
+        }).start();
+    }
+
+    public void closeAllWindows(final View view) {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                final String resp = post(CLOSE_ALL_WINDOWS);
+                    view.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            }
+        }).start();
+    }
+
     private String post(final String command) {
         InputStream stream = null;
         try {
@@ -85,11 +123,11 @@ public class MainActivity extends AppCompatActivity {
 //            conn.setRequestProperty("command", command);
             conn.setUseCaches(false);
 
-            DataOutputStream wr = new DataOutputStream (
-                    conn.getOutputStream ());
-            wr.writeBytes ("command="+command);
-            wr.flush ();
-            wr.close ();
+            DataOutputStream wr = new DataOutputStream(
+                    conn.getOutputStream());
+            wr.writeBytes("command=" + command);
+            wr.flush();
+            wr.close();
 
             int responseCode = conn.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
@@ -113,10 +151,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private EditText getEditKey()
-    {
-        return (EditText)findViewById(R.id.keyInputText);
     }
 }
