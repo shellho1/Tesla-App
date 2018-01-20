@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Spartahack Tesla Doors</string>
+    <string name="open_driver_door">Open Driver Door</string>
+    <string name="close_driver">Close Driver</string>
+</resources>
