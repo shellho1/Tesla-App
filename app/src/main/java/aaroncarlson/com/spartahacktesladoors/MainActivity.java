@@ -2,13 +2,20 @@ package aaroncarlson.com.spartahacktesladoors;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonReader;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -35,25 +42,15 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (post(DRIVER_DOOR_OPEN)) {
+                final String resp = post(DRIVER_DOOR_OPEN);
                     view.post(new Runnable() {
 
                         @Override
                         public void run() {
-                            Toast.makeText(view.getContext(), "success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
                         }
 
                     });
-                } else {
-                    view.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(view.getContext(), "fail", Toast.LENGTH_SHORT).show();
-                        }
-
-                    });
-                }
             }
         }).start();
     }
@@ -62,30 +59,20 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (post(DRIVER_DOOR_CLOSE)) {
+                final String resp = post(DRIVER_DOOR_CLOSE);
                     view.post(new Runnable() {
 
                         @Override
                         public void run() {
-                            Toast.makeText(view.getContext(), "success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
                         }
 
                     });
-                } else {
-                    view.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(view.getContext(), "fail", Toast.LENGTH_SHORT).show();
-                        }
-
-                    });
-                }
             }
         }).start();
     }
 
-    private boolean post(final String key) {
+    private String post(final String command) {
         InputStream stream = null;
         try {
             URL url = new URL(URL);
@@ -95,22 +82,28 @@ public class MainActivity extends AppCompatActivity {
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + PRIVATE_KEY);
-            conn.setRequestProperty("command", key);
+//            conn.setRequestProperty("command", command);
             conn.setUseCaches(false);
 
-            OutputStream outputStream = conn.getOutputStream();
-
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            DataOutputStream wr = new DataOutputStream (
+                    conn.getOutputStream ());
+            wr.writeBytes ("command="+command);
+            wr.flush ();
+            wr.close ();
 
             int responseCode = conn.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return false;
+                return "failed";
             }
+            stream = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
+            String s = reader.readLine();
+            return s != null ? s : "failed";
 
         } catch (MalformedURLException e) {
-            return false;
+            return "Failed";
         } catch (IOException ex) {
-            return false;
+            return "Failed";
         } finally {
             if (stream != null) {
                 try {
@@ -120,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        return true;
     }
 
     private EditText getEditKey()
