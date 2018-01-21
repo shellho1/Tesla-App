@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                     if (rear) {
                         return CLOSE_BACK_DRIVER_DOOR;
                     } else if (front) {
-                        return OPEN_BACK_DRIVER_DOOR;
+                        return CLOSE_FRONT_DRIVER_DOOR;
                     } else {
                         return DRIVER_DOOR_CLOSE;
                     }
@@ -226,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Authorization", "Bearer " + PRIVATE_KEY);
-//            conn.setRequestProperty("command", command);
             conn.setUseCaches(false);
 
             DataOutputStream wr = new DataOutputStream(
