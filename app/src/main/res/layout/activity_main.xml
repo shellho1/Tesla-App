@@ -71,6 +71,7 @@
     <ImageButton
         style="@android:style/Widget.Holo.ImageButton"
         android:id="@+id/speechTextButton"
+        style="@android:style/Widget.Holo.ImageButton"
         android:layout_width="119dp"
         android:layout_height="87dp"
         android:layout_marginBottom="8dp"

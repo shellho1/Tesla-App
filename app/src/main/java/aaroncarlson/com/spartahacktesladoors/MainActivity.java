@@ -175,13 +175,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return null;
             }
-        } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getBaseContext(), "Try again", Toast.LENGTH_SHORT).show();
-                }
-            });
+        }
+        if (speech.contains("trunk")) {
+            return TRUNK;
+        }
+        if (speech.contains("frunk")) {
+            return FRUNK;
         }
         return null;
     }
