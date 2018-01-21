@@ -1,5 +1,6 @@
 package aaroncarlson.com.spartahacktesladoors;
 
+import android.app.ActivityManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.ProcessingInstruction;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -24,11 +27,35 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String DRIVER_DOOR_OPEN = "openDriverDoors";
 
+    private static final String OPEN_PASSENGER_DOORS = "openPassengerDoors";
+
+    private static final String OPEN_FRONT_DRIVER_DOOR = "openFrontDriverDoor";
+
+    private static final String OPEN_BACK_DRIVER_DOOR = "openBackDriverDoor";
+
+    private static final String OPEN_FRONT_PASSENGER_DOOR = "openFrontPassengerDoor";
+
+    private static final String OPEN_BACK_PASSENGER_DOOR = "openBackPassengerDoor";
+
     private static final String DRIVER_DOOR_CLOSE = "closeDriverDoors";
+
+    private static final String CLOSE_PASSENGER_DOORS = "closePassengerDoors";
+
+    private static final String CLOSE_FRONT_DRIVER_DOOR = "closeFrontDriverDoor";
+
+    private static final String CLOSE_BACK_DRIVER_DOOR = "closeBackDriverDoor";
+
+    private static final String CLOSE_FRONT_PASSENGER_DOOR = "closeFrontPassengerDoor";
+
+    private static final String CLOSE_BACK_PASSENGER_DOOR = "closeBackPassengerDoor";
 
     private static final String OPEN_ALL_WINDOWS = "openAllWindows";
 
     private static final String CLOSE_ALL_WINDOWS = "closeAllWindows";
+
+    private static final String TRUNK = "trunk";
+
+    private static final String FRUNK = "frunk";
 
     private static final String URL = "http://hackathon.intrepidcs.com/api/data";
 
@@ -71,113 +98,122 @@ public class MainActivity extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String text = result.get(0);
                     TextView v = (TextView)findViewById(R.id.speechTextView);
-                    v.setText(text);
-                    parseSpeech(text);
+                    final String cmd = parseSpeech(text);
+                    v.setText(cmd);
+                    if (cmd != null) {
+                        command(findViewById(R.id.speechTextButton), cmd);
+                    } else {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getBaseContext(), "Try again", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
                 break;
             }
         }
     }
 
-    private void parseSpeech(String speech) {
+    private String parseSpeech(String speech) {
         speech = speech.toLowerCase();
 
         if (speech.contains("window")) {
             if (speech.contains("open")) {
-                post(OPEN_ALL_WINDOWS);
+                return OPEN_ALL_WINDOWS;
             } else if (speech.contains("close")) {
-                post(CLOSE_ALL_WINDOWS);
+                return CLOSE_ALL_WINDOWS;
             }
-        } else if (speech.contains("door")) {
-            //boolean passenger = speech.contains("passenger");
-            boolean driver = speech.contains("driver");
-            boolean open = speech.contains("open");
-            boolean close = speech.contains("close");
-            //boolean rear = speech.contains("rear");
-            //boolean front = speech.contains("front");
-
-            if (driver && open) {
-                post(DRIVER_DOOR_OPEN);
-            }
-            else if (driver && close) {
-                post(DRIVER_DOOR_CLOSE);
-            }
-        } else {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getBaseContext(), "Try again", Toast.LENGTH_SHORT).show();
-                }
-            });
         }
+        if (speech.contains("door")) {
+            boolean passenger = speech.contains("passenger");
+            boolean driver = !passenger && speech.contains("driver");
+            boolean open = speech.contains("open");
+            boolean close = !open && speech.contains("close");
+            boolean rear = speech.contains("rear") || speech.contains("back");
+            boolean front = !rear && speech.contains("front");
+
+            if (passenger) {
+                if (open) {
+                    if (rear) {
+                        return OPEN_BACK_PASSENGER_DOOR;
+                    } else if (front) {
+                        return OPEN_FRONT_PASSENGER_DOOR;
+                    } else {
+                        return OPEN_PASSENGER_DOORS;
+                    }
+                }
+                if (close) {
+                    if (rear) {
+                        return CLOSE_BACK_PASSENGER_DOOR;
+                    } else if (front) {
+                        return CLOSE_FRONT_PASSENGER_DOOR;
+                    } else {
+                        return CLOSE_PASSENGER_DOORS;
+                    }
+                }
+                return null;
+            } else if (driver) {
+                if (open) {
+                    if (rear) {
+                        return OPEN_BACK_DRIVER_DOOR;
+                    } else if (front) {
+                        return OPEN_FRONT_DRIVER_DOOR;
+                    } else {
+                        return DRIVER_DOOR_OPEN;
+                    }
+                }
+                if (close) {
+                    if (rear) {
+                        return CLOSE_BACK_DRIVER_DOOR;
+                    } else if (front) {
+                        return OPEN_BACK_DRIVER_DOOR;
+                    } else {
+                        return DRIVER_DOOR_CLOSE;
+                    }
+                }
+                return null;
+            }
+        }
+        if (speech.contains("trunk")) {
+            return TRUNK;
+        }
+        if (speech.contains("frunk")) {
+            return FRUNK;
+        }
+        return null;
+    }
+
+    private void command(final View view, final String command) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String resp = post(command);
+                view.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).start();
     }
 
     public void openDriverDoor(final View view) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String resp = post(DRIVER_DOOR_OPEN);
-                    view.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
-                        }
-
-                    });
-            }
-        }).start();
+        command(view, DRIVER_DOOR_OPEN);
     }
 
     public void closeDriverDoor(final View view) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                final String resp = post(DRIVER_DOOR_CLOSE);
-                    view.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
-                        }
-
-                    });
-            }
-        }).start();
+        command(view, DRIVER_DOOR_CLOSE);
     }
 
     public void openAllWindows(final View view) {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                final String resp = post(OPEN_ALL_WINDOWS);
-                    view.post(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            }
-        }).start();
+        command(view, OPEN_ALL_WINDOWS);
     }
 
     public void closeAllWindows(final View view) {
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                final String resp = post(CLOSE_ALL_WINDOWS);
-                    view.post(new Runnable() {
-
-                        @Override
-                        public void run() { //test
-                            Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            }
-        }).start();
+        command(view, CLOSE_ALL_WINDOWS);
     }
 
     private String post(final String command) {

@@ -69,7 +69,8 @@
         tools:layout_editor_absoluteX="112dp" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        style="@android:style/Widget.Holo.ImageButton"
+        android:id="@+id/speechTextButton"
         style="@android:style/Widget.Holo.ImageButton"
         android:layout_width="119dp"
         android:layout_height="87dp"
