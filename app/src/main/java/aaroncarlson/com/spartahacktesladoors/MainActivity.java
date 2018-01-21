@@ -99,9 +99,9 @@ public class MainActivity extends AppCompatActivity {
                     String text = result.get(0);
                     TextView v = (TextView)findViewById(R.id.speechTextView);
                     final String cmd = parseSpeech(text);
-                    v.setText(cmd);
                     if (cmd != null) {
                         command(findViewById(R.id.speechTextButton), cmd);
+                        v.setText(cmd);
                     } else {
                         runOnUiThread(new Runnable() {
                             @Override
