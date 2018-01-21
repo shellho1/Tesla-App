@@ -176,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
                 return null;
             }
         }
-        if (speech.contains("trunk")) {
+        if (!speech.contains("front") && speech.contains("trunk")) {
             return TRUNK;
         }
-        if (speech.contains("frunk")) {
+        if (speech.contains("front") && speech.contains("trunk")) {
             return FRUNK;
         }
         return null;
