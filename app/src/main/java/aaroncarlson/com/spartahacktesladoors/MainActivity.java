@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                     view.post(new Runnable() {
 
                         @Override
-                        public void run() {
+                        public void run() { //test
                             Toast.makeText(view.getContext(), resp, Toast.LENGTH_SHORT).show();
                         }
                     });
