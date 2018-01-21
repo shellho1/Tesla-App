@@ -14,6 +14,7 @@
         android:layout_height="47dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/white"
         android:onClick="openDriverDoor"
         android:text="@string/open_driver_door"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,6 +27,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/white"
         android:onClick="closeDriverDoor"
         android:text="@string/close_driver"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/white"
         android:onClick="openAllWindows"
         android:text="@string/openallwindows"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +53,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@android:color/white"
         android:onClick="closeAllWindows"
         android:text="@string/closeallwindows"
         app:layout_constraintEnd_toEndOf="parent"
@@ -65,6 +69,7 @@
         tools:layout_editor_absoluteX="112dp" />
 
     <ImageButton
+        style="@android:style/Widget.Holo.ImageButton"
         android:id="@+id/speechTextButton"
         android:layout_width="119dp"
         android:layout_height="87dp"
@@ -72,12 +77,14 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:backgroundTint="@android:color/transparent"
         android:onClick="onSpeech"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.904"
-        app:srcCompat="@android:drawable/ic_btn_speak_now" />
+        app:layout_constraintVertical_bias="0.90999997"
+        app:srcCompat="@drawable/microphone" />
 </android.support.constraint.ConstraintLayout>
