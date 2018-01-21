@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     String text = result.get(0);
                     TextView v = (TextView)findViewById(R.id.speechTextView);
                     v.setText(text);
+
                 }
                 break;
             }
