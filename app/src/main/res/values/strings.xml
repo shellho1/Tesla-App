@@ -4,4 +4,5 @@
     <string name="close_driver">Close Driver</string>
     <string name="openallwindows">Open All Windows</string>
     <string name="closeallwindows">Close All Windows</string>
+    <string name="speech">Speech</string>
 </resources>
