@@ -89,17 +89,16 @@
         app:layout_constraintVertical_bias="0.90999997"
         app:srcCompat="@drawable/microphone" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="312dp"
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="@string/names"
-        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"
+        android:text="Designed by Aaron, Weston, and Ryan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="467dp" />
+        app:layout_constraintTop_toBottomOf="@+id/speechTextButton" />
+
 </android.support.constraint.ConstraintLayout>
