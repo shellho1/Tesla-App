@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void parseSpeech(String speech) {
         speech = speech.toLowerCase();
+
         if (speech.contains("window")) {
             if (speech.contains("open")) {
                 post(OPEN_ALL_WINDOWS);
@@ -88,15 +89,18 @@ public class MainActivity extends AppCompatActivity {
                 post(CLOSE_ALL_WINDOWS);
             }
         } else if (speech.contains("door")) {
-            boolean passenger = speech.contains("passenger");
+            //boolean passenger = speech.contains("passenger");
             boolean driver = speech.contains("driver");
             boolean open = speech.contains("open");
             boolean close = speech.contains("close");
-            boolean rear = speech.contains("rear");
-            boolean front = speech.contains("front");
+            //boolean rear = speech.contains("rear");
+            //boolean front = speech.contains("front");
 
-            if (passenger || driver) {
-                
+            if (driver && open) {
+                post(DRIVER_DOOR_OPEN);
+            }
+            else if (driver && close) {
+                post(DRIVER_DOOR_CLOSE);
             }
         } else {
             runOnUiThread(new Runnable() {
