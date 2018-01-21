@@ -72,10 +72,39 @@ public class MainActivity extends AppCompatActivity {
                     String text = result.get(0);
                     TextView v = (TextView)findViewById(R.id.speechTextView);
                     v.setText(text);
-
+                    parseSpeech(text);
                 }
                 break;
             }
+        }
+    }
+
+    private void parseSpeech(String speech) {
+        speech = speech.toLowerCase();
+        if (speech.contains("window")) {
+            if (speech.contains("open")) {
+                post(OPEN_ALL_WINDOWS);
+            } else if (speech.contains("close")) {
+                post(CLOSE_ALL_WINDOWS);
+            }
+        } else if (speech.contains("door")) {
+            boolean passenger = speech.contains("passenger");
+            boolean driver = speech.contains("driver");
+            boolean open = speech.contains("open");
+            boolean close = speech.contains("close");
+            boolean rear = speech.contains("rear");
+            boolean front = speech.contains("front");
+
+            if (passenger || driver) {
+                
+            }
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getBaseContext(), "Try again", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
